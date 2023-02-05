@@ -79,6 +79,15 @@ function getHistoryStock (int $idStock):array
    return $res;
 }
 
+/**
+ * вычеслить следующий день от указанного
+ */
+function nextDay (int $unixtime):string
+{
+   $d = strtotime('+1 day', $unixtime);
+   return date('d.m.Y', $d); 
+}
+
 
 
 # -------------------------------------
@@ -88,11 +97,16 @@ $profiles = getActiveProfile();
 
 foreach($profiles as $profile)
 {
+
+   #dde($profile);
    # берем купленные акции у конкретного профиля
    $stocks = getInstrumentsPeriod($profile['id_profile']);
 
    foreach($stocks as $stock)
    {
+      dd($stock);
+
+      dde( nextDay($stock['inserted']) );
       # получаем динамику к каждой акции
       $stock['history'] = getHistoryStock($stock['id_stock']);
    }
