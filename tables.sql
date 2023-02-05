@@ -90,11 +90,3 @@ join posts p
 on i.id_post = p.id
 join profile pf
 on p.id_profile = pf.id
-
-
-SELECT pf.id as id_profile, pf.nickname, p.inserted, count(i.id) as cnt_instrs FROM instruments i
-join posts p
-on i.id_post = p.id
-join profile pf
-on p.id_profile = pf.id
-GROUP BY pf.nickname
