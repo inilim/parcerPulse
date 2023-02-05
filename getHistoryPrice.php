@@ -16,10 +16,12 @@ L_INIL_DB::$pathToFileDB = 'pulse.db';
 
 function createFrom ():string
 {
-   $from = strToUnix(date('d.m.Y'));
+   $from = time();
    $from = $from - ( 3600*24*90 );
    return date('Y-m', $from) . '-' . date('d');
 }
+
+# ----------------------------------------------
 
 $params = [
    # SSL off
@@ -49,6 +51,8 @@ foreach($stocks as $stock)
    $currentDate = date('Y-m-d');
    $currentTime = date('H:i');
 
+   # ----------------------------------------------
+
    $params[ GuzzleHttp\RequestOptions::JSON ] = $body = [
       'from' => $from . 'T' . $currentTime . ':00+03:00',
       'resolution' => 'D',
@@ -59,6 +63,8 @@ foreach($stocks as $stock)
    echo json_encode($body) . PHP_EOL;
 
    $client = new GuzzleHttp\Client($params);
+
+   # ----------------------------------------------
 
    msleep(mt_rand(3000,5000));
    

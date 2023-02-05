@@ -3,8 +3,6 @@
         "symfony/dom-crawler": "^6.0",
         "symfony/css-selector": "^6.0",
         "symfony/http-client": "^6.1",
-        "hflabs/dadata": "^22.3",
-        "chrome-php/chrome": "^1.7",
         "guzzlehttp/guzzle": "7.x"
     }
 }
