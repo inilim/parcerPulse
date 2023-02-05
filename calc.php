@@ -11,7 +11,6 @@ timeRun();
 
 # Пульс - социальная сеть для инвесторов и трейдеров
 
-
 L_INIL_DB::$pathToFileDB = 'pulse.db';
 
 /**

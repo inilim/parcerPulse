@@ -11,18 +11,9 @@ timeRun();
 
 # Пульс - социальная сеть для инвесторов и трейдеров
 
-
-Class Vars
-{
-   public static $start = 0;
-   public static $end = 100;
-}
-
 L_INIL_DB::$pathToFileDB = 'pulse.db';
 
 use Symfony\Component\DomCrawler\Crawler;
-#use Symfony\Component\HttpClient\Exception\TransportException;
-#use Symfony\Component\HttpClient\HttpClient;
 
 function getUrls (string $content):array
 {
@@ -33,11 +24,9 @@ function getUrls (string $content):array
       return $node->attr('href') ?? '';
    });
 
-
    $urls = am($urls, function($a)
    {
       $a = urldecode( trim($a) );
-
       # убираем все что идет после "?"
       $a = preg_replace('#\?.+#', '', $a);
       # убираем все что идет после "#"
@@ -45,7 +34,6 @@ function getUrls (string $content):array
 
       return $a;
    });
-
 
    $urls = array_filter($urls, fn($a) => $a !== '');
    $urls = array_filter($urls, fn($a) => $a !== '/');
@@ -59,14 +47,10 @@ function getUrls (string $content):array
       if(str_contains($a, '/etfs/')) return true;
    });
 
-   
-
    $urls = array_unique($urls);
    $urls = array_values($urls);
-
    return $urls;
 }
-
 
 $client = new GuzzleHttp\Client([
    # SSL off
@@ -81,9 +65,6 @@ $client = new GuzzleHttp\Client([
    ]
 ]);
 
-
-$add_url = [];
-
 while(1)
 {
    $urls = L_SqlStart('SELECT * FROM urls WHERE status = 0 LIMIT 100', [], 2);
@@ -92,15 +73,11 @@ while(1)
 
    foreach($urls as $url)
    {
-
       msleep(mt_rand(3000, 5000));
 
       $full_url = 'https://www.tinkoff.ru' . $url['url'];
 
       $res = requestExec($client, $full_url);
-
-      #unset($res['headers']['content-security-policy']);
-      #$res['headers'] = jsonEncode($res['headers']);
 
       if(is_array($res['html']))
       {
@@ -135,31 +112,8 @@ while(1)
          ];
       }
 
-
       L_execCommitPack('INSERT INTO urls (url,status,[insert]) VALUES (:url,0,:in);', $values, 1);
-      
-
    }#foreach
-
-   
-
-   #break;
-
 }#while
 
-
-
 L_execCommitPack('INSERT INTO urls (url,status,[insert]) VALUES (:url,0,:in);', $values, 1);
-
-
-
-
-#dde($urls);
-
-
-
-
-
-
-
-# requestExec($client, $full_url);

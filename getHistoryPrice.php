@@ -45,7 +45,7 @@ shuffle($stocks);
 
 foreach($stocks as $stock)
 {
-   # историю за 3 месяца
+   # история за 3 месяца
    $from = createFrom();
    $currentDate = date('Y-m-d');
    $currentTime = date('H:i');

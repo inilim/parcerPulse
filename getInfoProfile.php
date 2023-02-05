@@ -14,12 +14,6 @@ timeRun();
 
 L_INIL_DB::$pathToFileDB = 'pulse.db';
 
-use Symfony\Component\DomCrawler\Crawler;
-#use Symfony\Component\HttpClient\Exception\TransportException;
-#use Symfony\Component\HttpClient\HttpClient;
-
-
-
 $client = new GuzzleHttp\Client([
    # SSL off
    'verify' => false,
@@ -39,7 +33,6 @@ $ban_profiles = array_column($ban_profiles, 'nickname');
 
 $bd_profiles = L_SqlStart('SELECT nickname FROM profile',[], 2);
 $bd_profiles = array_column($bd_profiles, 'nickname');
-
 
 $urls = L_SqlStart('SELECT url FROM urls WHERE url LIKE "/invest/social/profile/%" AND instr(url, "-") = 0;', [], 2);
 $urls = array_column($urls, 'url');
@@ -73,8 +66,6 @@ foreach($nicknames as $nick)
       # обновляем если прошли сутки
       if( ($profile['update']-time()) < (3600*24) ) continue;
    } */
-
-
 
    $full_url = 'https://www.tinkoff.ru/api/invest-gw/social/v1/profile/nickname/'.
    $nick.
@@ -122,7 +113,6 @@ foreach($nicknames as $nick)
    if(!isset($arr['followersCount'])) dde($arr);
    if(!isset($arr['followingCount'])) dde($arr);
 
-
    L_SqlStart('INSERT INTO profile (update_info,id_api,nickname,[type],[status],followersCount,followingCount,yearRelativeYield,monthOperationsCount,totalAmountRange_lower,totalAmountRange_upper,[json]) VALUES (:update_info,:id_api,:nickname,:type,:status,:followersCount,:followingCount,:yearRelativeYield,:monthOperationsCount,:totalAmountRange_lower,:totalAmountRange_upper,:json);',
    [
       'update_info' => time(),
@@ -144,7 +134,5 @@ foreach($nicknames as $nick)
 
       'json' => $response['html'],
    ]);
-
-   #dde($arr);
 }
 
