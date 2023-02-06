@@ -29,21 +29,6 @@ function getActiveProfile (?int $term = null):array
 }
 
 /**
- * получить валюту к акциям
- */
-function getCurrencyStocks ():array
-{
-   $res = L_SqlStart('SELECT distinct id_stock as id, currency FROM instruments',[],2);
-
-   $res = array_combine(
-      array_column($res, 'id'),
-      array_column($res, 'currency')
-   );
-
-   return $res;
-}
-
-/**
  * Получить покупки за период у конкретного профиля
  */
 function getInstrumentsPeriod (int $idProfile, ?int $term = null):array

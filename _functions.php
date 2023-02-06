@@ -1,5 +1,35 @@
 <?php
 
+/**
+ * получить валюту к акциям
+ */
+function getCurrencyStocks ():array
+{
+   $res = L_SqlStart('SELECT distinct id_stock as id, currency FROM instruments',[],2);
+
+   $res = array_combine(
+      array_column($res, 'id'),
+      array_column($res, 'currency')
+   );
+
+   return $res;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# --------------------------------------------------
+
 function isInt ($i): bool
 {
 	if(is_null($i)
@@ -91,6 +121,31 @@ function isJson(string $str):bool
 function jsonDecode (string $json):array
 {
     return json_decode($json, true);
+}
+
+/**
+ * По умолчанию все констаты активны
+ * json_encode с JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_FORCE_OBJECT
+ *
+ * @param boolean $JPR JSON_PRETTY_PRINT
+ * @param boolean $JUU JSON_UNESCAPED_UNICODE
+ * @param boolean $JFO JSON_FORCE_OBJECT
+ */
+function jsonEncode (array $arr, bool $JPR = true, bool $JUU = true, bool $JFO = true):string
+{
+	return json_encode($arr,
+	($JPR ? JSON_PRETTY_PRINT : 0)|($JUU ? JSON_UNESCAPED_UNICODE : 0)|($JFO ? JSON_FORCE_OBJECT : 0)
+	);
+}
+
+function fgc (string $path)
+{
+    return file_get_contents($path);
+}
+
+function fpc (string $path, string $content, int $flags = 0)
+{
+    return file_put_contents($path, $content, $flags);
 }
 
 /**

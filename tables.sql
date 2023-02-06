@@ -97,6 +97,21 @@ CREATE TABLE calcInstruments (
     ON CONFLICT IGNORE
 );
 
+CREATE TABLE calcProductiveProfiles (
+    id_profile   INTEGER,
+    id_instr     INTEGER,
+    id_stock     INTEGER,
+    diff_percent DOUBLE,
+    diff_price   DOUBLE,
+    change_days  INTEGER,
+    UNIQUE (
+        id_profile,
+        id_instr,
+        id_stock,
+        change_days
+    )
+);
+
 
 -- Представления
 
