@@ -63,10 +63,7 @@ function requestExec (GuzzleHttp\Client $client, string $url, string $method = '
 
 function isJson(string $str):bool
 {
-	if(isInt($str))
-	{
-		return false;
-	}
+	if(isInt($str)) return false;
 	json_decode($str);
 	return json_last_error() === JSON_ERROR_NONE;
 }
@@ -175,11 +172,11 @@ function subst (string $string, int $offset, ?int $length = null):string
 }
 
 /**
- * mb_strpos($str, $find, 0, 'UTF-8')
+ * mb_strpos($str, $find, $offset, 'UTF-8')
  */
-function stpos (string $str, string $find):int|false
+function stpos (string $str, string $find, int $offset = 0):int|false
 {
-    return mb_strpos($str, $find, 0, 'UTF-8');
+    return mb_strpos($str, $find, $offset, 'UTF-8');
 }
 
 function sttolower (string $str):string
@@ -197,7 +194,7 @@ function stlen (string $str):int
     return mb_strlen($str, 'UTF-8');
 }
 
-function getUnix (string $pattern, string $dateH): int
+function getUnix (string $pattern, string $date):int
 {
-    return DateTime::createFromFormat($pattern, $dateH)->getTimestamp();
+    return DateTime::createFromFormat($pattern, $date)->getTimestamp();
 }
