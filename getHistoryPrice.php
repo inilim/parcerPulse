@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 set_time_limit(0);
 date_default_timezone_set('Etc/GMT-3');
-require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/_functions.php';
 # Функции для работы с PDO SqLite
 require_once __DIR__ . '/_INIL_connectLite.php';
 require_once __DIR__ . '/vendor/autoload.php';
@@ -74,11 +74,16 @@ foreach($stocks as $stock)
    
    $arr = jsonDecode($response['html']);
    
-   if(!isset($arr['payload']['candles'])) dde($arr);
+   if(!isset($arr['payload']['candles']))
+   {
+      # акция не найдена
+      if($arr['payload']['code'] === 'TickerNotFound') continue;
+      dde($arr);
+   }
    
    $arr = $arr['payload']['candles'];
    
-   if(sizeof($arr) === 0) dde($arr);
+   #if(sizeof($arr) === 0) dde($arr);
    
    $arr = am($arr, function($a) use ($stock)
    {
@@ -95,5 +100,5 @@ foreach($stocks as $stock)
    DO UPDATE SET
    open=:o,high=:h,low=:l,close=:c,volume=:v', $arr, 1);
 
-   dde();
+   #dde();
 }

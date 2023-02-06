@@ -2,12 +2,11 @@
 error_reporting(E_ALL);
 set_time_limit(0);
 date_default_timezone_set('Etc/GMT-3');
-require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/_functions.php';
 # Функции для работы с PDO SqLite
 require_once __DIR__ . '/_INIL_connectLite.php';
 require_once __DIR__ . '/vendor/autoload.php';
 ini_set('memory_limit', '5024M');
-timeRun();
 
 # Пульс - социальная сеть для инвесторов и трейдеров
 
@@ -72,9 +71,14 @@ function getInstrumentsPeriod (int $idProfile, ?int $term = null):array
  */
 function getHistoryStock (int $idStock):array
 {
-   $res = L_SqlStart('SELECT * FROM history WHERE id_stock = :id',[
+   $res = L_SqlStart('SELECT * FROM history WHERE id_stock = :id ORDER BY unix ASC',[
       'id' => $idStock,
    ],2);
+
+   $res = array_combine(
+      array_column($res, 'date'),
+      $res
+   );
 
    return $res;
 }
@@ -88,12 +92,25 @@ function nextDay (int $unixtime):string
    return date('d.m.Y', $d); 
 }
 
+/**
+ * вычеслить предыдущий день от указанного
+ */
+function beforeDay (int $unixtime):string
+{
+   $d = strtotime('-1 day', $unixtime);
+   return date('d.m.Y', $d); 
+}
+
 
 
 # -------------------------------------
 
+$values = [];
+
 # получить профили у которых были покупки
 $profiles = getActiveProfile();
+
+shuffle($profiles);
 
 foreach($profiles as $profile)
 {
@@ -104,13 +121,51 @@ foreach($profiles as $profile)
 
    foreach($stocks as $stock)
    {
-      dd($stock);
+      # пропускаем сегодняшние и вчерашние покупки
+      if($stock['date'] === date('d.m.Y')) continue;
+      if(beforeDay($stock['inserted']) === beforeDay(time())) continue;
 
-      dde( nextDay($stock['inserted']) );
-      # получаем динамику к каждой акции
+      # получаем динамику к текущей акции
       $stock['history'] = getHistoryStock($stock['id_stock']);
-   }
 
-   
+      # api тинькофа хренова выдает динамику
+      if($stock['history'] === []) continue;
+      if(!isset($stock['history'][ $stock['date'] ])) continue;
+
+      #echo $stock['date'] . PHP_EOL;
+      #echo $stock['price'] . PHP_EOL;
+
+      $unixBuy = $stock['inserted'];
+      $unixBuy = strtotime('today', $unixBuy);
+
+      $calc = array_filter($stock['history'], function($a) use ($unixBuy)
+      {
+         return $unixBuy < $a['unix'];
+      });
+
+      # берем закрытую цену
+      $calc = array_combine(
+         array_column($calc, 'date'),
+         array_column($calc, 'close')
+      );
+
+      foreach($calc as $date => $item)
+      {
+         $values[] = [
+            'unix' => getUnix('d.m.Y', $date),
+            'date' => $date,
+            'id_profile' => $profile['id_profile'],
+            'id_instr' => $stock['id'],
+            'id_stock' => $stock['id_stock'],
+            'close_price' => $item
+         ];
+      }
+
+      unset($calc);
+
+      L_execCommitPack('INSERT INTO calcInstruments (unix,[date],id_profile,id_instr,id_stock,close_price) VALUES (:unix,:date,:id_profile,:id_instr,:id_stock,:close_price);', $values, 1);
+
+      dde();
+   }
 }
 

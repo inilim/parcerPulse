@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 set_time_limit(0);
 date_default_timezone_set('Etc/GMT-3');
-require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/_functions.php';
 # Функции для работы с PDO SqLite
 require_once __DIR__ . '/_INIL_connectLite.php';
 require_once __DIR__ . '/vendor/autoload.php';
