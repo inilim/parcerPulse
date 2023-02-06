@@ -1,5 +1,25 @@
 <?php
 
+function isInt ($i): bool
+{
+	if(is_null($i)
+	|| is_bool($i)
+	|| is_array($i)
+	|| is_object($i))
+	{
+		return false;
+	}
+	if(preg_match('#^0$#', $i))
+	{
+		return true;
+	}
+	if(preg_match('#^\-?[1-9][0-9]{0,}$#', $i))
+	{
+		return true;
+	}
+	return false;
+}
+
 /**
  * Ожидание в миллисекундах. значение 100 = 0.1 секунде.
  */

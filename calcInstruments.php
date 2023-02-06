@@ -8,7 +8,6 @@ require_once __DIR__ . '/_INIL_connectLite.php';
 require_once __DIR__ . '/vendor/autoload.php';
 ini_set('memory_limit', '5024M');
 
-# Пульс - социальная сеть для инвесторов и трейдеров
 
 L_INIL_DB::$pathToFileDB = 'pulse.db';
 
@@ -102,7 +101,8 @@ function beforeDay (int $unixtime):string
 }
 
 
-
+# -------------------------------------
+$sql = 'INSERT INTO calcInstruments (unix,[date],id_profile,id_instr,id_stock,close_price) VALUES (:unix,:date,:id_profile,:id_instr,:id_stock,:close_price);';
 # -------------------------------------
 
 $values = [];
@@ -110,7 +110,7 @@ $values = [];
 # получить профили у которых были покупки
 $profiles = getActiveProfile();
 
-shuffle($profiles);
+#shuffle($profiles);
 
 foreach($profiles as $profile)
 {
@@ -135,6 +135,8 @@ foreach($profiles as $profile)
       #echo $stock['date'] . PHP_EOL;
       #echo $stock['price'] . PHP_EOL;
 
+      # -------------------------------------
+
       $unixBuy = $stock['inserted'];
       $unixBuy = strtotime('today', $unixBuy);
 
@@ -149,6 +151,8 @@ foreach($profiles as $profile)
          array_column($calc, 'close')
       );
 
+      # -------------------------------------
+
       foreach($calc as $date => $item)
       {
          $values[] = [
@@ -161,11 +165,12 @@ foreach($profiles as $profile)
          ];
       }
 
+      # -------------------------------------
+
       unset($calc);
 
-      L_execCommitPack('INSERT INTO calcInstruments (unix,[date],id_profile,id_instr,id_stock,close_price) VALUES (:unix,:date,:id_profile,:id_instr,:id_stock,:close_price);', $values, 1);
-
-      dde();
+      L_execCommitPack($sql, $values, 1000);
    }
 }
 
+L_execCommitPack($sql, $values, 1);

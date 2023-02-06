@@ -7,9 +7,11 @@ require_once __DIR__ . '/_functions.php';
 require_once __DIR__ . '/_INIL_connectLite.php';
 require_once __DIR__ . '/vendor/autoload.php';
 ini_set('memory_limit', '5024M');
-timeRun();
 
 # Пульс - социальная сеть для инвесторов и трейдеров
+
+# getUrls.php > getInfoProfile.php > getPostsStocksInstruments.php
+# getHistoryPrice.php
 
 L_INIL_DB::$pathToFileDB = 'pulse.db';
 

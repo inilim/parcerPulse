@@ -81,6 +81,23 @@ CREATE TABLE urls (
     count_find_urls INTEGER
 );
 
+CREATE TABLE calcInstruments (
+    unix        INTEGER,
+    date        TEXT,
+    id_profile  INTEGER,
+    id_instr    INTEGER,
+    id_stock    INTEGER,
+    close_price DOUBLE,
+    UNIQUE (
+        date,
+        id_profile,
+        id_instr,
+        id_stock
+    )
+    ON CONFLICT IGNORE
+);
+
+
 -- Представления
 
 SELECT s.ticker, pf.id as id_profile, p.inserted, i.* FROM instruments i
