@@ -5,16 +5,23 @@ date_default_timezone_set('Etc/GMT-3');
 if (ob_get_level()) ob_end_clean();
 
 require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/_functions.php';
+require __DIR__ . '/MainPage.php';
 
 use \Bramus\Router\Router;
 
 $router = new Router;
 
-
 # Main
 $router->get('/', function()
 {
-   # контроллер
+   (new MainPage)->run();
+});
+
+$router->get('/page\-([1-9][0-9]{0,})',
+function ($page)
+{
+   (new MainPage)->run($page);
 });
 
 
