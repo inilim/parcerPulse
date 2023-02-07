@@ -177,6 +177,11 @@
     font-weight: 300;
   }
 
+  .back .inner p{
+    font-family: 'Montserrat';
+    font-size: 14px;
+  }
+
   @media screen and (max-width: 64rem){
     .col{
       width: calc(33.333333% - 2rem);
@@ -200,19 +205,19 @@
 
 <body>
   <div class="wrapper">
-    <h1>Продуктивные пользователи Pulse</h1>
+    <h1>Pulse network analysis</h1>
     <div class="cols">
       <div class="col" style="display: none;" ontouchstart="this.classList.toggle('hover');">
         <div class="container">
-          <div class="front" style="background-image: url(https://unsplash.it/500/500/)">
+          <div class="front" style="">
             <div class="inner">
-              <p>#123542</p>
-              <span>+ -</span>
+              <p></p>
+              <span></span>
             </div>
           </div>
           <div class="back">
             <div class="inner">
-              <p>Инфо</p>
+              <p></p>
             </div>
           </div>
         </div>
@@ -264,11 +269,58 @@
     {
       //console.log(instrs);
       clone = clone.cloneNode(true);
-      clone.querySelector('div.inner > p').innerText = '#' + id;
-      clone.querySelector('div.inner > span').innerText = 'Покупок: ' + Object.keys(instrs).length;
+      clone.querySelector('.back > div.inner > p').innerText = textBack(instrs);
+      clone.querySelector('.front > div.inner > p').innerText = 'user#' + id;
+      clone.querySelector('.front > div.inner > span').innerText = 'Profit: ' + profitCalc(instrs) + '%';
+      clone.querySelector('.front > div.inner > span').innerText += `\nStocks: ` + Object.entries(instrs).length;
 
-      
+      clone.querySelector('.front').style = generateGrad();
+
+
+
       conteiner.append(clone);
+    }
+
+    function profitCalc (instrs)
+    {
+      let percent = 0;
+      for (const [key, instr] of Object.entries(instrs))
+      {
+        percent = percent + instr.diff_percent;
+      }
+      return percent.toFixed(2);
+    }
+
+    function textBack (instrs)
+    {
+      let text = `Changes in three days:\n\n`;
+      text += `Stock | Profit | Price\n`;
+      instrs = Object.entries(instrs).slice(0,8).map(entry => entry[1]);;
+      //console.log(instrs);
+      for (const [key, instr] of Object.entries(instrs))
+      {
+        text += `${instr.ticker} | ${instr.diff_percent}% | ${instr.diff_price} ${instr.currency}\n`;
+      }
+      //console.log(text);
+      return text;
+    }
+
+    function randomColor ()
+    {
+      let hexString = "0123456789abcdef";
+      let hexCode = "#";
+      for( i=0; i<6; i++){
+          hexCode += hexString[Math.floor(Math.random() * hexString.length)];
+      }
+      return hexCode;
+    }
+    
+    function generateGrad ()
+    {
+      let colorOne = randomColor();
+      let colorTwo = randomColor();
+      let angle = Math.floor(Math.random() * 360);
+      return `background: linear-gradient(${angle}deg, ${colorOne}, ${colorTwo});`;
     }
 
     function getData ()
