@@ -1,0 +1,9 @@
+# Use UTF-8 encoding for anything served text/plain or text/html
+AddDefaultCharset utf-8
+
+# Force UTF-8 for a number of file formats
+AddCharset utf-8 .html .css .js .xml .json .rss
+
+RewriteEngine on
+RewriteCond %{REQUEST_URI} !^/style\.css$
+RewriteRule .*? Router.php
