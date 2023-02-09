@@ -1,4 +1,22 @@
 <?php
+/**
+ * функция не проверяет длину значения, будет true даже с bigint и более.
+ */
+function isInt (mixed $i): bool
+{
+	if(is_null($i)
+	|| is_bool($i)
+	|| is_array($i)
+	|| is_object($i)) return false;
+
+	$i = strval($i);
+	
+	if(preg_match('#^0$#', $i)) return true;
+
+	if(preg_match('#^\-?[1-9][0-9]{0,}$#', $i)) return true;
+
+	return false;
+}
 
 /**
  * Расчитываем сколько страниц допустимо

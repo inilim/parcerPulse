@@ -12,18 +12,17 @@ clone.removeAttribute('style');
 document.addEventListener('DOMContentLoaded', function()
 {
    genPage(mainData);
-   console.log(mainData.length);
 });
 
 function genPage (profiles)
 {
-   profiles.forEach(function(instrs)
+   for (let [key, instrs] of Object.entries(profiles))
    {
-      instrs = Object.entries(instrs);
+      //console.log(instrs);
       
       //console.log(instrs);
-      genCard(instrs[0][1].id_profile, instrs);
-   });
+      genCard(instrs[0].id_profile, instrs);
+   }
 }
 
 function genCard (id, instrs)
@@ -47,18 +46,22 @@ function profitCalc (instrs)
    let percent = 0;
    instrs.forEach(function(val)
    {
-      percent = percent + val[1].diff_percent;
+      percent = percent + parseFloat(val.diff_percent);
    });
+   
    return percent.toFixed(2);
 }
 
 function textBack (instrs)
 {
+   instrs = instrs.slice(0,8);
    let text = `Changes in three days:\n\n`;
    text += `Stock | Profit | Price\n`;
    instrs.forEach(function(val)
    {
-      text += `${val[1].ticker} | ${val[1].diff_percent}% | ${val[1].diff_price} ${val[1].currency}\n`;
+      val.diff_percent = parseFloat(val.diff_percent).toFixed(2);
+      val.diff_price = parseFloat(val.diff_price).toFixed(2);
+      text += `${val.ticker} | ${val.diff_percent}% | ${val.diff_price} ${val.currency}\n`;
    });
    return text;
 }
@@ -68,7 +71,7 @@ function randomColor ()
    let hexString = "0123456789abcdef";
    let hexCode = "#";
    for( i=0; i<6; i++){
-         hexCode += hexString[Math.floor(Math.random() * hexString.length)];
+      hexCode += hexString[Math.floor(Math.random() * hexString.length)];
    }
    return hexCode;
 }
