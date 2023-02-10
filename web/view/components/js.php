@@ -1,7 +1,37 @@
 <script>
+function forEach (iterable, callback)
+{
+   if(typeof callback !== 'function')
+   {
+      throw 'forEach: callback not function.';
+   }
+   if(typeof iterable !== 'object')
+   {
+      throw 'forEach: value not iterable.';
+   }
+
+   if(iterable.constructor.name === 'Array')
+   {
+      iterable.forEach(function(value, index)
+      {
+         callback(value, index);
+      });
+   }
+   else if(iterable.constructor.name === 'Object')
+   {
+      for(let [key, value] of Object.entries(iterable))
+      {
+         callback(value, key);
+      }
+   }
+   else
+   {
+      throw 'forEach: value not Array or Object.';
+   }
+}
+
 let mainData = '<?=$json?>';
 mainData = JSON.parse(mainData);
-//console.log(mainData);
 let conteiner = document.querySelector('div.cols');
 let hidden = conteiner.querySelector('div.col');
 let clone = hidden.cloneNode(true);
@@ -16,18 +46,14 @@ document.addEventListener('DOMContentLoaded', function()
 
 function genPage (profiles)
 {
-   for (let [key, instrs] of Object.entries(profiles))
+   forEach(profiles, function(value, index)
    {
-      //console.log(instrs);
-      
-      //console.log(instrs);
-      genCard(instrs[0].id_profile, instrs);
-   }
+      genCard(index, value);
+   });
 }
 
 function genCard (id, instrs)
 {
-   //console.log(instrs);
    clone = clone.cloneNode(true);
    clone.querySelector('.back > div.inner > p').innerText = textBack(instrs);
    clone.querySelector('.front > div.inner > p').innerText = 'User #' + id;
@@ -35,20 +61,16 @@ function genCard (id, instrs)
    clone.querySelector('.front > div.inner > span').innerText += `\nStocks: ` + instrs.length;
 
    clone.querySelector('.front').style = generateGrad();
-
-
-
    conteiner.append(clone);
 }
 
 function profitCalc (instrs)
 {
    let percent = 0;
-   instrs.forEach(function(val)
+   forEach(instrs, function(val)
    {
       percent = percent + parseFloat(val.diff_percent);
    });
-   
    return percent.toFixed(2);
 }
 
@@ -57,7 +79,7 @@ function textBack (instrs)
    instrs = instrs.slice(0,8);
    let text = `Changes in three days:\n\n`;
    text += `Stock | Profit | Price\n`;
-   instrs.forEach(function(val)
+   forEach(instrs, function(val)
    {
       val.diff_percent = parseFloat(val.diff_percent).toFixed(2);
       val.diff_price = parseFloat(val.diff_price).toFixed(2);
