@@ -30,8 +30,18 @@ Class MainPage
       $data = $this->getRecords($idProfiles);
       
       $this->objRender->render('main', [
-         'json' => json_encode($data)
+         'json' => json_encode($data),
+         'pagination' => $this->getPaginationData()
       ]);
+   }
+
+   private function getPaginationData ():array
+   {
+      
+      return [
+         'left' => 0,
+         'right' => 0
+      ];
    }
 
    private function getProfiles ():array
